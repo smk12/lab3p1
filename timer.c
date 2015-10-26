@@ -1,13 +1,21 @@
 /*
  * File:   timer.c
- * Authors:
+ * Author: gvanhoy
  *
  * Created on December 30, 2014, 8:07 PM
  */
 
 #include <xc.h>
 #include "timer.h"
+#include "interrupt.h"
 
+void initTimer2(){
+    TMR2 = 0;
+    PR2 = 1023;
+    T2CONbits.TCKPS = 0;
+    T2CONbits.TCS = 0;
+    T2CONbits.ON = 1;
+}
 
 
 void delayUs(unsigned int delay)
@@ -26,6 +34,8 @@ void delayUs(unsigned int delay)
     
 }
 
+
+
 void delayMs(unsigned int delay){
     //TODO: Create a delay using timer 2 for "delay" microseconds.
     TMR2 = 0;
@@ -38,17 +48,4 @@ void delayMs(unsigned int delay){
     T2CONbits.ON = 0;
     IFS0bits.T2IF = 0;
 
-}
-
-void MsTMR1(unsigned int delay)
-{
-    TMR1 = 0;                           //configured for 10ms
-    PR1 = delay*39;        //31249
-    T1CONbits.TCKPS = 3;//pre-scalar 3
-    T1CONbits.TCS = 0;//osc config
-    IFS0bits.T1IF = 0;//flag
-    T1CONbits.ON = 1;
-    while(IFS0bits.T1IF == 0) {}
-    T1CONbits.ON = 0;
-    IFS0bits.T1IF = 0;
 }
